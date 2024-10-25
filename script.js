@@ -1,7 +1,7 @@
 const express = require('express');
 const mysql = require('mysql');
 const app = express();
-const expressPort = 3001;
+const expressPort = 3000;
 
 app.use(express.json());
 
@@ -27,41 +27,23 @@ app.listen(expressPort, ()=>{
 });
 
 
+
 app.get('/items', (req, res) => {
     const sql = `
-        SELECT items.*, categories.name AS category_name 
-        FROM items 
-        JOIN categories ON items.id_category = categories.id;
+        SELECT * FROM items
     `;
 
-    dataBase.query(sql, (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: 'ERREUR DU SERVEUR' });
-        } else {
-            return res.status(200).json(result);
-        }
-    });
-});
-
-app.get('/items/:id', (req, res) => {
-    const { id } = req.params;
-    const sql = `
-        SELECT items.*, categories.name AS category_name 
-        FROM items 
-        JOIN categories ON items.id_category = categories.id 
-        WHERE items.id = ?;
-    `;
-
-    dataBase.query(sql, [id], (err, result) => {
+    dataBase.query(sql, (err, result) => { 
         if (err) {
             return res.status(500).json({ error: 'ERREUR DU SERVEUR' });
         } else if (result.length === 0) {
-            return res.status(404).json({ error: 'Item non trouvé' });
+            return res.status(404).json({ error: 'Aucun item trouvé' });
         } else {
-            return res.status(200).json(result[0]); 
+            return res.status(200).json(result); 
         }
     });
 });
+
 
 
 app.post('/items', (req, res) => {
@@ -129,6 +111,10 @@ app.delete('/items/:id', (req, res) => {
         });
     });
 });
+
+
+
+
 
 
 
